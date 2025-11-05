@@ -1,0 +1,86 @@
+from flask import Flask, request, redirect, render_template, session, g
+import sqlite3
+
+DB = 'db.sqlite'
+app = Flask(__name__)
+app.secret_key = 'dev-secret-key'  # insecure on purpose for lab
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect(DB)
+    return g.db
+
+def init_db():
+    db = sqlite3.connect(DB)
+    cur = db.cursor()
+    cur.execute("""CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE,
+                    password TEXT
+                   )""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS comments (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user TEXT,
+                    comment TEXT
+                   )""")
+    try:
+        cur.execute("INSERT INTO users (username, password) VALUES ('admin', 'admin123')")
+        db.commit()
+    except:
+        pass
+    db.close()
+
+@app.route('/')
+def index():
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("SELECT user, comment FROM comments ORDER BY id DESC")
+    comments = cur.fetchall()
+    return render_template('index.html', comments=comments, user=session.get('user'))
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if request.method == 'POST':
+        uname = request.form.get('username')
+        pwd = request.form.get('password')
+        db = get_db()
+        cur = db.cursor()
+        query = f"SELECT username FROM users WHERE username = '{uname}' AND password = '{pwd}'"
+        cur.execute(query)
+        row = cur.fetchone()
+        if row:
+            session['user'] = row[0]
+            return redirect('/')
+        else:
+            return "Login failed", 401
+    return render_template('login.html')
+
+@app.route('/comment', methods=['POST'])
+def comment():
+    user = session.get('user') or 'anonymous'
+    c = request.form.get('comment')
+    db = get_db()
+    cur = db.cursor()
+    cur.execute("INSERT INTO comments (user, comment) VALUES (?, ?)", (user, c))
+    db.commit()
+    return redirect('/')
+
+@app.route('/admin')
+def admin():
+    if session.get('user') == 'admin':
+        return render_template('admin.html')
+    return "Forbidden", 403
+
+@app.teardown_appcontext
+def close_db(e=None):
+    db = g.pop('db', None)
+    if db:
+        db.close()
+
+if __name__ == '__main__':
+with app.app_context():
+        try:
+            init_db()
+        except Exception as e:
+            print('init_db error:', e)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,0 +1,36 @@
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   .gitignore
+	new file:   README.md
+	new file:   app.py
+	new file:   report.md
+	new file:   screenshot_sqli_burp.png
+	new file:   screenshot_xss_alert.png
+	new file:   sqli_repeater_response.xml
+	new file:   sqli_response.txt
+	new file:   sqli_response_page_snapshot.html
+	new file:   templates/admin.html
+	new file:   templates/index.html
+	new file:   templates/layout.html
+	new file:   templates/login.html
+	new file:   xss_headers.txt
+	new file:   xss_response.txt
+	new file:   xss_response_post.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	app.py.backup.1762322296
+	app.py.broken.1762321081
+	git_status_in_repo.txt
+	requirements.txt
+	safe_commit.log
+	safe_local_commit.sh
+	sqli_headers.txt
+	sqli_response_post.txt
+	sqli_response_try2.txt
+	tall --upgrade pip
+

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Comments</h2>
+<form method="post" action="/comment">
+  <textarea name="comment" rows="3" cols="50"></textarea><br>
+  <button type="submit">Post</button>
+</form>
+
+<ul>
+  {% for user, comment in comments %}
+    <li><strong>{{ user }}</strong>: {{ comment|safe }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

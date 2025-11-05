@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head><title>MiniBlog</title></head>
+<body>
+  <header>
+    <h1>MiniBlog (Vulnerable)</h1>
+    
+      Logged in as admin | <a href="/">Home</a>
+    
+    <hr>
+  </header>
+  
+<h2>Comments</h2>
+<form method="post" action="/comment">
+  <textarea name="comment" rows="3" cols="50"></textarea><br>
+  <button type="submit">Post</button>
+</form>
+
+<ul>
+  
+</ul>
+
+</body>
+</html>
